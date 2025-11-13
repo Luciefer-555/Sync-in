@@ -1,0 +1,154 @@
+{
+  "questions": [
+    {
+      "id": "html-1",
+      "question": "What does HTML stand for?",
+      "options": [
+        "Hyper Text Markup Language",
+        "High Tech Modern Language",
+        "Hyperlinks and Text Markup Language",
+        "Home Tool Markup Language"
+      ],
+      "correctAnswer": 0,
+      "explanation": "HTML stands for Hyper Text Markup Language, which is the standard markup language for creating web pages.",
+      "category": "HTML",
+      "difficulty": "Easy",
+      "tags": ["html", "basics"]
+    },
+    {
+      "id": "html-2",
+      "question": "Which HTML element is used to define the title of a document?",
+      "options": [
+        "<head>",
+        "<title>",
+        "<header>",
+        "<h1>"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The <title> tag in HTML is used to define the title of the document, which appears in the browser's title bar or tab.",
+      "category": "HTML",
+      "difficulty": "Easy",
+      "tags": ["html", "elements"]
+    },
+    {
+      "id": "html-3",
+      "question": "What is the correct HTML for creating a hyperlink?",
+      "options": [
+        "<a url=\"http://example.com\">Example</a>",
+        "<a href=\"http://example.com\">Example</a>", 
+        "<link>http://example.com</link>",
+        "<a>http://example.com</a>"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The correct HTML for creating a hyperlink is <a href=\"URL\">Link text</a>. The href attribute specifies the destination URL.",
+      "category": "HTML",
+      "difficulty": "Easy",
+      "tags": ["html", "links"]
+    },
+    {
+      "id": "html-4",
+      "question": "Which HTML5 element is used for playing video files?",
+      "options": [
+        "<movie>",
+        "<media>",
+        "<video>",
+        "<play>"
+      ],
+      "correctAnswer": 2,
+      "explanation": "The <video> element is used to embed video content in an HTML document. It was introduced in HTML5.",
+      "category": "HTML",
+      "difficulty": "Medium",
+      "tags": ["html5", "multimedia"]
+    },
+    {
+      "id": "html-5",
+      "question": "What is the correct HTML for inserting an image?",
+      "options": [
+        "<img src=\"image.jpg\" alt=\"MyImage\">",
+        "<image src=\"image.jpg\" alt=\"MyImage\">",
+        "<img href=\"image.jpg\" alt=\"MyImage\">",
+        "<picture src=\"image.jpg\" alt=\"MyImage\">"
+      ],
+      "correctAnswer": 0,
+      "explanation": "The correct HTML for inserting an image is <img src=\"image.jpg\" alt=\"description\">. The alt attribute provides alternative text for screen readers.",
+      "category": "HTML",
+      "difficulty": "Easy",
+      "tags": ["html", "images"]
+    },
+    {
+      "id": "html-6",
+      "question": "Which HTML attribute is used to define inline styles?",
+      "options": [
+        "class",
+        "styles",
+        "style",
+        "css"
+      ],
+      "correctAnswer": 2,
+      "explanation": "The style attribute is used to add inline CSS styles to HTML elements.",
+      "category": "HTML",
+      "difficulty": "Easy",
+      "tags": ["html", "css", "styling"]
+    },
+    {
+      "id": "html-7",
+      "question": "What is the correct HTML for creating a drop-down list?",
+      "options": [
+        "<list>\n  <option>Option 1</option>\n  <option>Option 2</option>\n</list>",
+        "<select>\n  <option>Option 1</option>\n  <option>Option 2</option>\n</select>",
+        "<dropdown>\n  <item>Option 1</item>\n  <item>Option 2</item>\n</dropdown>",
+        "<input type=\"dropdown\">"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The <select> element is used to create a drop-down list, with <option> elements defining the available options.",
+      "category": "HTML",
+      "difficulty": "Medium",
+      "tags": ["html", "forms"]
+    },
+    {
+      "id": "html-8",
+      "question": "Which HTML5 element is used to draw graphics on a web page?",
+      "options": [
+        "<paint>",
+        "<canvas>",
+        "<svg>",
+        "<graphics>"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The <canvas> element is used to draw graphics, on the fly, via JavaScript. It's part of HTML5.",
+      "category": "HTML",
+      "difficulty": "Medium",
+      "tags": ["html5", "graphics"]
+    },
+    {
+      "id": "html-9",
+      "question": "What is the purpose of the HTML5 <article> element?",
+      "options": [
+        "To define a section of navigation links",
+        "To define self-contained content that could exist independently",
+        "To define a section in a document",
+        "To define important text"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The <article> element specifies independent, self-contained content that should make sense on its own.",
+      "category": "HTML",
+      "difficulty": "Medium",
+      "tags": ["html5", "semantics"]
+    },
+    {
+      "id": "html-10",
+      "question": "Which HTML5 element is used to define a header for a document or section?",
+      "options": [
+        "<section>",
+        "<head>",
+        "<header>",
+        "<top>"
+      ],
+      "correctAnswer": 2,
+      "explanation": "The <header> element represents a container for introductory content or a set of navigational links.",
+      "category": "HTML",
+      "difficulty": "Easy",
+      "tags": ["html5", "semantics"]
+    }
+  ]
+}

@@ -10,6 +10,7 @@ import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { MagicCard, MagicCardGroup } from "@/components/effects/interactive-card"
 import { BookOpen, Trophy, TrendingUp, Users } from "lucide-react"
+import { usePrepProgress } from "@/components/providers/prep-progress-provider"
 
 type StatKey = "problemsSolved" | "streakDays" | "hackathons" | "collaborations"
 
@@ -74,6 +75,27 @@ export default function Dashboard() {
     summaryFrequency: "week",
     motivationFocus: "consistency",
   })
+
+  const { solvedCount: prepSolvedCount, countsByDifficulty: prepCountsByDifficulty, countsByType: prepCountsByType, solvedQuestions: prepSolvedQuestions } =
+    usePrepProgress()
+
+  const topPrepDifficulties = useMemo(() => {
+    return Object.entries(prepCountsByDifficulty)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 3)
+  }, [prepCountsByDifficulty])
+
+  const topPrepTypes = useMemo(() => {
+    return Object.entries(prepCountsByType)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 3)
+  }, [prepCountsByType])
+
+  const recentPrepSolved = useMemo(() => {
+    return [...prepSolvedQuestions]
+      .sort((a, b) => b.timestamp - a.timestamp)
+      .slice(0, 3)
+  }, [prepSolvedQuestions])
 
   const statConfig: StatConfig[] = useMemo(
     () => [
@@ -177,6 +199,63 @@ export default function Dashboard() {
             )
           })}
         </div>
+
+        <MagicCard className="bg-gray-900 border border-gray-700 rounded-2xl p-8" enableMagnetism enableTilt>
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+            <div>
+              <h2 className="font-alata text-2xl font-bold text-white mb-2">Interview Prep Snapshot</h2>
+              <p className="text-gray-400 font-inter text-sm">
+                Synced live from the Prep workspace so your solved questions stay connected to your goals.
+              </p>
+            </div>
+            <div className="flex items-center gap-3 rounded-2xl border border-primary/40 bg-primary/10 px-4 py-2">
+              <span className="text-3xl font-alata text-primary">{prepSolvedCount}</span>
+              <div className="text-xs uppercase tracking-wide text-white/70">Total solved</div>
+            </div>
+          </div>
+          <div className="mt-6 grid gap-6 lg:grid-cols-3">
+            <div className="space-y-3">
+              <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-400">Top difficulties</h3>
+              <div className="space-y-2">
+                {topPrepDifficulties.length === 0 && <p className="text-xs text-gray-500">Mark problems as solved to unlock insights.</p>}
+                {topPrepDifficulties.map(([difficulty, count]) => (
+                  <div key={difficulty} className="flex items-center justify-between rounded-xl border border-gray-800 bg-gray-950/70 px-3 py-2 text-sm text-gray-300">
+                    <span>{difficulty}</span>
+                    <span className="font-semibold text-white">{count}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="space-y-3">
+              <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-400">Top question types</h3>
+              <div className="space-y-2">
+                {topPrepTypes.length === 0 && <p className="text-xs text-gray-500">Solve a few more to see this breakdown.</p>}
+                {topPrepTypes.map(([type, count]) => (
+                  <div key={type} className="flex items-center justify-between rounded-xl border border-gray-800 bg-gray-950/70 px-3 py-2 text-sm text-gray-300">
+                    <span>{type}</span>
+                    <span className="font-semibold text-white">{count}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="space-y-3">
+              <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-400">Recently solved</h3>
+              <div className="space-y-2">
+                {recentPrepSolved.length === 0 && <p className="text-xs text-gray-500">No recent activity yet.</p>}
+                {recentPrepSolved.map((question) => (
+                  <div key={question.id} className="rounded-xl border border-gray-800 bg-gray-950/70 px-3 py-2">
+                    <p className="text-sm font-medium text-white line-clamp-2">{question.title}</p>
+                    <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] text-gray-400">
+                      {question.subject && <span className="rounded-full bg-gray-900 px-2 py-0.5">{question.subject}</span>}
+                      {question.questionType && <span className="rounded-full bg-gray-900 px-2 py-0.5">{question.questionType}</span>}
+                      {question.difficulty && <span className="rounded-full bg-gray-900 px-2 py-0.5">{question.difficulty}</span>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </MagicCard>
 
         <div className="grid grid-cols-1 lg:grid-cols-[2fr,1fr] gap-6">
           <MagicCard className="bg-gray-900 border border-gray-700 rounded-2xl p-8" enableMagnetism enableTilt>

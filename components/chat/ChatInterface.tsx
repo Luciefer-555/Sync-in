@@ -1,25 +1,30 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { ArrowRight, ThumbsUp, ThumbsDown, Loader2, MessageSquare, Bot, User } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Send, Bot, User, ClipboardList, MessageSquare, ThumbsUp, ThumbsDown, Loader2, ArrowRight } from "lucide-react";
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 
 type Message = {
   id: string;
+  role: 'assistant' | 'user';
   content: string;
-  sender: 'user' | 'assistant';
   timestamp: Date;
-  feedback?: 'positive' | 'negative' | null;
-  isTyping?: boolean;
   displayText?: string;
+  isTyping?: boolean;
+  feedback?: 'positive' | 'negative';
 };
 
 export default function ChatInterface() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([{
+    id: "initial",
+    role: "assistant",
+    content: "Hi! I'm SyncIn's AI buddy. Ask me anything about your academic journey, upcoming hackathons, or resources you need! 😎",
+    timestamp: new Date(),
+    displayText: "Hi! I'm SyncIn's AI buddy. Ask me anything about your academic journey, upcoming hackathons, or resources you need! 😎"
+  }]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingInterval = useRef<NodeJS.Timeout>();
 
@@ -84,9 +89,9 @@ export default function ChatInterface() {
     if (!input.trim() || isLoading) return;
 
     const userMessage: Message = {
-      id: Date.now().toString(),
+      id: `${Date.now().toString(10)}-user`,
+      role: 'user',
       content: input,
-      sender: 'user',
       timestamp: new Date(),
       displayText: input
     };
@@ -103,9 +108,9 @@ export default function ChatInterface() {
         },
         body: JSON.stringify({
           question: input,
-          context: messages.filter(m => m.sender === 'user' || m.sender === 'assistant')
-            .slice(-4) // Send last 4 messages for context
-            .map(({ id, ...rest }) => rest) // Remove id from context
+          context: messages
+            .map(({ id, ...rest }) => rest)
+            .slice(-4)
         }),
       });
 
@@ -116,11 +121,10 @@ export default function ChatInterface() {
       const data = await response.json();
       const answer = data.answer || "I'm not sure how to respond to that.";
 
-      // Add the assistant message with empty display text initially
       const assistantMessage: Message = {
-        id: `msg-${Date.now()}`,
+        id: `msg-${Date.now().toString(10)}`,
         content: answer,
-        sender: 'assistant',
+        role: 'assistant',
         timestamp: new Date(),
         displayText: '',
         isTyping: true
@@ -131,10 +135,10 @@ export default function ChatInterface() {
       // Start typing animation
       typeMessage(assistantMessage.id, answer, () => {
         // When typing is complete
-        setMessages(prev => 
-          prev.map(msg => 
-            msg.id === assistantMessage.id 
-              ? { ...msg, isTyping: false } 
+        setMessages(prev =>
+          prev.map(msg =>
+            msg.id === assistantMessage.id
+              ? { ...msg, isTyping: false }
               : msg
           )
         );
@@ -143,9 +147,9 @@ export default function ChatInterface() {
     } catch (error) {
       console.error('Error:', error);
       const errorMessage: Message = {
-        id: `error-${Date.now()}`,
+        id: `error-${Date.now().toString(10)}`,
         content: 'Sorry, I encountered an error. Please try again.',
-        sender: 'assistant',
+        role: 'assistant',
         timestamp: new Date(),
         displayText: 'Sorry, I encountered an error. Please try again.'
       };
@@ -243,19 +247,19 @@ export default function ChatInterface() {
                   transition={{ duration: 0.3 }}
                   className={cn(
                     'flex',
-                    message.sender === 'user' ? 'justify-end' : 'justify-start'
+                    message.role === 'user' ? 'justify-end' : 'justify-start'
                   )}
                 >
                   <div
                     className={cn(
                       'max-w-[90%] md:max-w-[85%] rounded-2xl p-5 shadow-sm relative overflow-hidden',
-                      message.sender === 'user'
+                      message.role === 'user'
                         ? 'bg-primary text-primary-foreground rounded-br-none'
                         : 'bg-muted/80 text-foreground rounded-bl-none border border-border/30'
                     )}
                   >
                     {/* Typing indicator for AI messages */}
-                    {message.sender === 'assistant' && message.isTyping && (
+                    {message.role === 'assistant' && message.isTyping && (
                       <div className="absolute top-0 left-0 w-full h-1 bg-primary/20">
                         <motion.div 
                           className="h-full bg-primary/70"
@@ -273,11 +277,11 @@ export default function ChatInterface() {
                     <div className="flex items-start gap-3">
                       <div className={cn(
                         'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mt-0.5',
-                        message.sender === 'user' 
+                        message.role === 'user' 
                           ? 'bg-primary-foreground/20' 
                           : 'bg-primary/10 text-primary'
                       )}>
-                        {message.sender === 'user' ? (
+                        {message.role === 'user' ? (
                           <User className="w-4 h-4" />
                         ) : (
                           <Bot className="w-4 h-4" />
@@ -302,7 +306,7 @@ export default function ChatInterface() {
                             })}
                           </span>
                           
-                          {message.sender === 'assistant' && !message.isTyping && (
+                          {message.role === 'assistant' && !message.isTyping && (
                             <div className="flex space-x-1">
                               <button
                                 onClick={(e) => {

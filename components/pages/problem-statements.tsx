@@ -94,54 +94,54 @@ export default function ProblemStatements() {
     }
   }
 
-  const ProblemCard = ({ problem, isHackathon = false }: { problem: Problem, isHackathon?: boolean }) => (
-    <Card className="bg-gray-900 border-gray-800 p-6 rounded-xl hover:border-[#1DB954]/50 transition-colors">
-      <div className="flex flex-col h-full">
+  const ProblemCard = ({ problem, isHackathon = false }: { problem: Problem; isHackathon?: boolean }) => (
+    <Card className="rounded-2xl border border-gray-800 bg-gray-900/80 p-6 text-gray-200 transition-colors duration-200 hover:border-primary/40 hover:bg-gray-900">
+      <div className="flex h-full flex-col">
         <div className="flex-1">
           <div className="flex items-start justify-between">
             <div>
-              <h3 className="font-alata font-bold text-white text-lg mb-2">{problem.title}</h3>
-              <div className="flex items-center gap-2 mb-3">
-                <span className="text-sm text-gray-300">{problem.category}</span>
+              <h3 className="mb-2 font-alata text-lg font-bold text-white">{problem.title}</h3>
+              <div className="mb-3 flex items-center gap-2">
+                <span className="text-sm text-gray-400">{problem.category}</span>
                 <Badge className={`${getDifficultyColor(problem.difficulty)} border-0 text-xs`}>
                   {problem.difficulty}
                 </Badge>
                 {isHackathon && (
-                  <Badge className="bg-[#1DB954]/20 text-[#1DB954] border-0 text-xs">
+                  <Badge className="border-0 bg-primary/20 text-primary text-xs">
                     Hackathon
                   </Badge>
                 )}
               </div>
             </div>
           </div>
-          
+
           {problem.description && (
-            <p className="text-gray-300 text-sm mb-4 line-clamp-2">
+            <p className="mb-4 line-clamp-2 text-sm text-gray-300">
               {problem.description}
             </p>
           )}
         </div>
-        
+
         {isHackathon && problem.source && (
-          <Link 
-            href={problem.source} 
-            target="_blank" 
+          <Link
+            href={problem.source}
+            target="_blank"
             rel="noopener noreferrer"
-            className="mt-4 inline-flex items-center justify-center px-4 py-2 bg-[#1DB954] text-white rounded-md hover:bg-opacity-90 transition-colors text-sm font-medium w-full text-center"
+            className="mt-4 inline-flex w-full items-center justify-center rounded-full bg-primary px-4 py-2 text-center text-sm font-medium text-white transition-colors hover:bg-primary/90"
           >
             View on SIH
-            <svg 
-              className="w-4 h-4 ml-2" 
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24" 
+            <svg
+              className="ml-2 h-4 w-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
             >
               <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M14 5l7 7m0 0l-7 7m7-7H3" 
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M14 5l7 7m0 0l-7 7m7-7H3"
               />
             </svg>
           </Link>
@@ -151,28 +151,30 @@ export default function ProblemStatements() {
   )
 
   return (
-    <div className="pt-24 px-4 md:px-8 pb-12 bg-black text-white min-h-screen">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="font-alata text-4xl font-bold text-white mb-2">Problem Statements</h1>
-        <p className="text-gray-400 mb-8">Explore and contribute to these challenges</p>
+    <div className="min-h-screen bg-black pt-24 pb-16 text-white">
+      <div className="mx-auto w-full max-w-7xl px-6">
+        <h1 className="font-alata text-4xl font-bold">Problem Statements</h1>
+        <p className="mb-10 text-gray-400">Explore and contribute to these challenges</p>
         
-        <section className="mb-12">
-          <div className="flex items-center gap-3 mb-6">
-            <svg 
-              className="w-8 h-8 text-[#1DB954]" 
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24" 
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" 
-              />
-            </svg>
-            <h2 className="text-2xl font-bold text-white font-alata">Hackathon Challenges</h2>
+        <section className="mb-12 space-y-6">
+          <div className="flex items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-gray-800 bg-gray-950/70 text-primary">
+              <svg
+                className="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                />
+              </svg>
+            </div>
+            <h2 className="font-alata text-2xl font-semibold">Hackathon Challenges</h2>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -182,8 +184,26 @@ export default function ProblemStatements() {
           </div>
         </section>
 
-        <section>
-          <h2 className="text-2xl font-bold text-white mb-6 font-alata">Other Problem Statements</h2>
+        <section className="space-y-6">
+          <div className="flex items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-gray-800 bg-gray-950/70 text-primary">
+              <svg
+                className="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 21H5a2 2 0 01-2-2V7a2 2 0 012-2h7l2 2h5a2 2 0 012 2v10a2 2 0 01-2 2z"
+                />
+              </svg>
+            </div>
+            <h2 className="font-alata text-2xl font-semibold">Other Problem Statements</h2>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {otherProblems.map((problem) => (
               <ProblemCard key={`other-${problem.id}`} problem={problem} />

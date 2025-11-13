@@ -1,9 +1,10 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server'
 
-// Tell Next.js to use the Edge Runtime
-export const runtime = 'edge';
+import dataset from '@/src/data/dataset'
 
-// Types
+// Switch to the Node runtime so we can call local/remote HTTP services like Ollama.
+export const runtime = 'nodejs'
+
 type Message = {
   role: 'user' | 'assistant';
   content: string;
@@ -14,134 +15,152 @@ type RequestBody = {
   context?: Message[];
 };
 
-// Import the dataset from the new location
-import dataset from '@/src/data/dataset';
+const DEFAULT_OLLAMA_URL = 'http://127.0.0.1:11434';
+const DEFAULT_MODEL = 'cs-mentor';
+const FALLBACK_SOURCE = 'SyncIn Knowledge Base';
+const DEFAULT_FALLBACK_RESPONSE =
+  "I'm still learning and couldn't find an exact answer. Could you add more details so I can help better?";
 
-// Simple in-memory cache for the dataset
-let cachedDataset: any[] = [];
+const ollamaBaseUrl = process.env.OLLAMA_BASE_URL?.trim() || DEFAULT_OLLAMA_URL;
+const ollamaModel = process.env.OLLAMA_MODEL?.trim() || DEFAULT_MODEL;
+const ollamaSystemPrompt =
+  process.env.OLLAMA_SYSTEM_PROMPT?.trim() ||
+  'You are CS Mentor, an AI assistant specialized in computer science education and career guidance. You provide clear, concise, and accurate information about programming concepts, interview preparation, and career development in the tech industry.';
 
-// Load the dataset
-async function loadDataset() {
-  if (cachedDataset.length > 0) {
-    return cachedDataset;
-  }
-  
-  try {
-    // The dataset is imported directly, no need for fs
-    cachedDataset = Array.isArray(dataset) ? dataset : [];
-    return cachedDataset;
-  } catch (error) {
-    console.error('Error loading dataset:', error);
-    return [];
-  }
-}
-
-// Simple tokenizer (improve with a proper NLP library for production)
-const tokenize = (text: string): string[] => {
+function tokenize(text: string): string[] {
   return text
     .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, ' ')
     .split(/\s+/)
-    .filter(word => word.length > 0);
-};
+    .filter(Boolean);
+}
 
-// Calculate similarity between two texts (0 to 1)
-const calculateSimilarity = (text1: string, text2: string): number => {
-  const tokens1 = new Set(tokenize(text1));
-  const tokens2 = tokenize(text2);
-  
-  if (tokens1.size === 0 || tokens2.length === 0) return 0;
-  
-  let matches = 0;
-  for (const token of tokens2) {
-    if (tokens1.has(token)) matches++;
+function jaccardSimilarity(a: Set<string>, b: Set<string>): number {
+  if (a.size === 0 || b.size === 0) return 0;
+
+  let intersection = 0;
+  a.forEach((token) => {
+    if (b.has(token)) {
+      intersection += 1;
+    }
+  });
+
+  const union = new Set([...a, ...b]).size;
+  return union === 0 ? 0 : intersection / union;
+}
+
+function findDatasetAnswer(question: string): string | null {
+  const questionTokens = new Set(tokenize(question));
+  if (questionTokens.size === 0) {
+    return null;
   }
-  
-  // Jaccard similarity coefficient
-  return matches / (tokens1.size + tokens2.length - matches);
-};
+
+  let bestScore = 0;
+  let bestAnswer: string | null = null;
+
+  dataset.forEach((item) => {
+    const candidateTokens = new Set(tokenize(`${item.instruction} ${item.input}`));
+    if (candidateTokens.size === 0) {
+      return;
+    }
+
+    const score = jaccardSimilarity(questionTokens, candidateTokens);
+
+    if (score > bestScore) {
+      bestScore = score;
+      bestAnswer = item.output.trim();
+    }
+  });
+
+  return bestScore > 0 ? bestAnswer : null;
+}
+
+function buildFallbackAnswer(question: string) {
+  const datasetAnswer = findDatasetAnswer(question);
+
+  if (datasetAnswer) {
+    return {
+      answer: datasetAnswer,
+      source: FALLBACK_SOURCE,
+    };
+  }
+
+  return {
+    answer: DEFAULT_FALLBACK_RESPONSE,
+    source: 'SyncIn Assistant',
+  };
+}
+
+function buildMessages(question: string, context: Message[]): { role: string; content: string }[] {
+  const history = context.map((message) => ({
+    role: message.role,
+    content: message.content,
+  }));
+
+  return [
+    { role: 'system', content: ollamaSystemPrompt },
+    ...history,
+    { role: 'user', content: question },
+  ];
+}
 
 export async function POST(request: Request) {
   try {
-    // Load the dataset
-    const dataset = await loadDataset();
-    if (dataset.length === 0) {
-      throw new Error('Failed to load knowledge base');
-    }
-
     const { question, context = [] }: RequestBody = await request.json();
-    
-    if (!question) {
+
+    if (!question?.trim()) {
       return NextResponse.json(
         { error: 'Question is required' },
         { status: 400 }
       );
     }
 
-    // Prepare search text with context
-    const contextText = context.map(m => m.content).join(' ');
-    const searchText = `${contextText} ${question}`.trim().toLowerCase();
-    
-    // Find the most relevant answer
-    const relevantItems = [];
-    
-    for (const item of dataset) {
-      if (!item.instruction || !item.output) continue;
-      
-      const instruction = item.instruction.toLowerCase();
-      const output = item.output.toLowerCase();
-      
-      // Simple keyword matching (can be improved with better NLP techniques)
-      const keywords = searchText.split(/\s+/);
-      const matchScore = keywords.reduce((score, keyword) => {
-        if (instruction.includes(keyword) || output.includes(keyword)) {
-          return score + 1;
-        }
-        return score;
-      }, 0);
-      
-      if (matchScore > 0) {
-        relevantItems.push({
-          ...item,
-          score: matchScore
-        });
-      }
-    }
-    
-    // Sort by match score and get the best match
-    const bestMatch = relevantItems.sort((a, b) => b.score - a.score)[0];
-    
-    if (bestMatch) {
-      return NextResponse.json({
-        answer: bestMatch.output,
-        source: bestMatch.instruction || 'SyncIn Knowledge Base',
-        confidence: bestMatch.score / 10 // Normalize score to 0-1 range
+    const messages = buildMessages(question, context);
+
+    let answer: string | undefined;
+    let source: string | undefined;
+
+    try {
+      const response = await fetch(`${ollamaBaseUrl}/api/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: ollamaModel,
+          messages,
+          stream: false,
+        }),
       });
-    }
 
-    // If no good match found, try to generate a contextual response
-    if (context.length > 0) {
-      // Try to find a follow-up pattern
-      const lastMessage = context[context.length - 1];
-      if (lastMessage.role === 'assistant') {
-        // Check if this is a request for more details
-        const lowerQuestion = question.toLowerCase();
-        if (lowerQuestion.includes('more') || 
-            lowerQuestion.includes('elaborate') || 
-            lowerQuestion.includes('tell me more')) {
-          return NextResponse.json({
-            answer: "I'd be happy to provide more details. Could you specify which part you'd like me to elaborate on?",
-            source: 'SyncIn Assistant'
-          });
+      if (response.ok) {
+        const payload = await response.json();
+        const backendAnswer = payload?.message?.content?.trim();
+
+        if (backendAnswer) {
+          answer = backendAnswer;
+          source = ollamaModel;
+        } else {
+          console.warn('Ollama response did not include message content:', payload);
         }
+      } else {
+        const errorText = await response.text();
+        console.error('Ollama chat error:', response.status, errorText);
       }
+    } catch (error) {
+      console.error('Unable to reach Ollama backend:', error);
     }
 
-    // Fallback response
-    return NextResponse.json({
-      answer: "I'm not entirely sure about that. Could you provide more context or rephrase your question? I'm here to help with information about SyncIn, academic resources, and career guidance.",
-      source: 'SyncIn Assistant'
-    });
+    if (!answer) {
+      const fallback = buildFallbackAnswer(question);
+      answer = fallback.answer;
+      source = fallback.source;
+    }
 
+    return NextResponse.json({
+      answer,
+      source,
+    });
   } catch (error) {
     console.error('Error processing chat:', error);
     return NextResponse.json(

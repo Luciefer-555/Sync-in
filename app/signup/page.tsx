@@ -12,24 +12,28 @@ import GlareHover from "@/components/effects/glare-hover"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import Link from "next/link"
 
+type Status = { kind: "error" | "success"; message: string } | null
+
 export default function SignupPage() {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
+    phone: "",
+    collegeId: "",
+    collegeName: "",
     password: "",
     confirmPassword: "",
-    college: "",
-    branch: "",
     year: "",
+    branch: "",
     skills: "",
-    project: "",
-    linkedin: "",
   })
+  const [submitting, setSubmitting] = useState(false)
+  const [status, setStatus] = useState<Status>(null)
 
   const { login } = useAuth()
   const router = useRouter()
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
@@ -38,17 +42,65 @@ export default function SignupPage() {
     setFormData((prev) => ({ ...prev, year: value }))
   }
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (
-      formData.fullName &&
-      formData.email &&
-      formData.password &&
-      formData.confirmPassword &&
-      formData.password === formData.confirmPassword
-    ) {
-      login()
+    setStatus(null)
+
+    if (!formData.fullName.trim()) {
+      setStatus({ kind: "error", message: "Please provide your full name." })
+      return
+    }
+    if (!formData.email.trim()) {
+      setStatus({ kind: "error", message: "College email is required." })
+      return
+    }
+    if (formData.password !== formData.confirmPassword) {
+      setStatus({ kind: "error", message: "Passwords do not match." })
+      return
+    }
+    if (!formData.collegeId.trim() || !formData.collegeName.trim()) {
+      setStatus({ kind: "error", message: "College ID and college name are required." })
+      return
+    }
+    if (!formData.phone.trim()) {
+      setStatus({ kind: "error", message: "Phone number is required." })
+      return
+    }
+
+    setSubmitting(true)
+
+    try {
+      const response = await fetch("/api/user/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: formData.fullName.trim(),
+          email: formData.email.trim(),
+          phone: formData.phone.trim(),
+          collegeId: formData.collegeId.trim(),
+          collegeName: formData.collegeName.trim(),
+          password: formData.password,
+          skills: formData.skills
+            .split(",")
+            .map((skill) => skill.trim())
+            .filter(Boolean),
+          role: "student",
+        }),
+      })
+
+      const json = await response.json()
+      if (!response.ok || !json.success) {
+        throw new Error(json.error ?? "Unable to create account. Please try again.")
+      }
+
+      login(json.user)
+      setStatus({ kind: "success", message: `Account created! Your profile ID is ${json.user.profileId}.` })
       router.push("/")
+    } catch (error) {
+      console.error("Signup failed", error)
+      setStatus({ kind: "error", message: error instanceof Error ? error.message : "An unexpected error occurred." })
+    } finally {
+      setSubmitting(false)
     }
   }
 
@@ -77,6 +129,17 @@ export default function SignupPage() {
           <h2 className="text-2xl font-bold text-white mb-6 font-inter">Join SyncIn</h2>
 
           <form onSubmit={handleSignup} className="space-y-4">
+            {status && (
+              <p
+                className={`rounded-xl px-4 py-3 text-sm font-inter ${
+                  status.kind === "error"
+                    ? "border border-red-400/40 bg-red-400/10 text-red-100"
+                    : "border border-emerald-400/40 bg-emerald-400/10 text-emerald-100"
+                }`}
+              >
+                {status.message}
+              </p>
+            )}
             {/* Full Name */}
             <div className="space-y-2">
               <Label htmlFor="fullName" className="text-white font-inter text-sm">
@@ -103,6 +166,21 @@ export default function SignupPage() {
                 type="email"
                 placeholder="you@example.com"
                 value={formData.email}
+                onChange={handleChange}
+                className="bg-white/10 border-white/20 text-white placeholder:text-white/50 font-inter focus:border-white/40"
+              />
+            </div>
+
+            {/* Phone */}
+            <div className="space-y-2">
+              <Label htmlFor="phone" className="text-white font-inter text-sm">
+                Phone number (kept private)
+              </Label>
+              <Input
+                id="phone"
+                name="phone"
+                placeholder="+91 98765 43210"
+                value={formData.phone}
                 onChange={handleChange}
                 className="bg-white/10 border-white/20 text-white placeholder:text-white/50 font-inter focus:border-white/40"
               />
@@ -142,14 +220,29 @@ export default function SignupPage() {
 
             {/* College */}
             <div className="space-y-2">
-              <Label htmlFor="college" className="text-white font-inter text-sm">
+              <Label htmlFor="collegeName" className="text-white font-inter text-sm">
                 College / University Name
               </Label>
               <Input
-                id="college"
-                name="college"
+                id="collegeName"
+                name="collegeName"
                 placeholder="Your college"
-                value={formData.college}
+                value={formData.collegeName}
+                onChange={handleChange}
+                className="bg-white/10 border-white/20 text-white placeholder:text-white/50 font-inter focus:border-white/40"
+              />
+            </div>
+
+            {/* College ID */}
+            <div className="space-y-2">
+              <Label htmlFor="collegeId" className="text-white font-inter text-sm">
+                College ID / Campus code
+              </Label>
+              <Input
+                id="collegeId"
+                name="collegeId"
+                placeholder="e.g., NITD123"
+                value={formData.collegeId}
                 onChange={handleChange}
                 className="bg-white/10 border-white/20 text-white placeholder:text-white/50 font-inter focus:border-white/40"
               />
@@ -206,8 +299,9 @@ export default function SignupPage() {
             <Button
               type="submit"
               className="w-full bg-white text-black hover:bg-white/90 font-inter font-semibold py-6 rounded-lg transition-all duration-200 hover:scale-105 active:scale-95 mt-6"
+              disabled={submitting}
             >
-              Create Account
+              {submitting ? "Creating account..." : "Create Account"}
             </Button>
           </form>
 

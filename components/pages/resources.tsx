@@ -13,47 +13,55 @@ export default function Resources() {
   ]
 
   return (
-    <div className="pt-24 px-8 pb-8 bg-black text-white min-h-screen">
-      <h1 className="font-alata text-4xl font-bold text-white mb-8">Resources</h1>
+    <div className="min-h-screen bg-black pt-24 pb-12 text-white">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6">
+        <h1 className="font-alata text-4xl font-bold">Resources</h1>
 
-      <div className="space-y-8">
-        <section>
-          <div className="flex items-center gap-3 mb-6">
-            <BookOpenText className="w-8 h-8 text-[#1DB954]" />
-            <h2 className="text-2xl font-bold text-white">Research Papers</h2>
-          </div>
-          <ResearchPaperLibrary />
-        </section>
+        <div className="space-y-12">
+          <section className="space-y-6">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-gray-800 bg-gray-950/70 text-primary">
+                <BookOpenText className="h-6 w-6" />
+              </div>
+              <h2 className="text-2xl font-semibold">Research Papers</h2>
+            </div>
+            <Card className="border border-gray-800 bg-gray-900/80 p-6 text-gray-200">
+              <ResearchPaperLibrary />
+            </Card>
+          </section>
 
-        <section className="pt-8">
-          <div className="flex items-center gap-3 mb-6">
-            <BookOpen className="w-8 h-8 text-[#1DB954]" />
-            <h2 className="text-2xl font-bold text-white">Learning Resources</h2>
-          </div>
-          <div className="space-y-4">
-            {resources.map((resource) => (
-              <Card
-                key={resource.id}
-                className="bg-gray-900 border-gray-800 p-6 rounded-2xl hover:border-[#1DB954]/50 transition-colors cursor-pointer"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="p-3 bg-gray-800 rounded-lg">
-                    {resource.type === "PDF" ? (
-                      <FileText className="w-6 h-6 text-[#1DB954]" />
-                    ) : (
-                      <BookOpen className="w-6 h-6 text-[#1DB954]" />
-                    )}
+          <section className="space-y-6">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-gray-800 bg-gray-950/70 text-primary">
+                <BookOpen className="h-6 w-6" />
+              </div>
+              <h2 className="text-2xl font-semibold">Learning Resources</h2>
+            </div>
+            <div className="space-y-4">
+              {resources.map((resource) => (
+                <Card
+                  key={resource.id}
+                  className="cursor-pointer rounded-2xl border border-gray-800 bg-gray-900/80 p-6 text-gray-200 transition-colors duration-200 hover:border-primary/40 hover:bg-gray-900"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-gray-800 bg-gray-950/70 text-primary">
+                      {resource.type === "PDF" ? (
+                        <FileText className="h-5 w-5" />
+                      ) : (
+                        <BookOpen className="h-5 w-5" />
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-inter text-base font-semibold text-white">{resource.title}</h3>
+                      <p className="font-inter text-sm text-gray-400">{resource.type}</p>
+                    </div>
+                    <p className="font-inter text-sm text-gray-400">{resource.downloads} downloads</p>
                   </div>
-                  <div className="flex-1">
-                    <h3 className="font-inter font-semibold text-white">{resource.title}</h3>
-                    <p className="text-gray-400 font-inter text-sm">{resource.type}</p>
-                  </div>
-                  <p className="text-gray-400 font-inter text-sm">{resource.downloads} downloads</p>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </section>
+                </Card>
+              ))}
+            </div>
+          </section>
+        </div>
       </div>
     </div>
   )

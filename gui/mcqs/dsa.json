@@ -1,0 +1,49 @@
+{
+  "questions": [
+    {
+      "id": "dsa-1",
+      "question": "What is the time complexity of accessing an element in an array by index?",
+      "options": [
+        "O(1)",
+        "O(log n)",
+        "O(n)",
+        "O(n²)"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Accessing an element in an array by its index is a constant time operation O(1) because the memory address can be calculated directly using the base address and the index.",
+      "category": "DSA",
+      "difficulty": "Easy",
+      "tags": ["arrays", "time-complexity"]
+    },
+    {
+      "id": "dsa-2",
+      "question": "Which of the following data structures uses LIFO (Last In First Out) principle?",
+      "options": [
+        "Queue",
+        "Stack",
+        "Linked List",
+        "Tree"
+      ],
+      "correctAnswer": 1,
+      "explanation": "A Stack is a linear data structure that follows the LIFO (Last In First Out) principle, meaning the last element added to the stack will be the first one to be removed.",
+      "category": "DSA",
+      "difficulty": "Easy",
+      "tags": ["stacks", "data-structures"]
+    },
+    {
+      "id": "dsa-3",
+      "question": "What is the time complexity of the quicksort algorithm in the average case?",
+      "options": [
+        "O(n)",
+        "O(n log n)",
+        "O(n²)",
+        "O(log n)"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Quicksort has an average-case time complexity of O(n log n), making it one of the most efficient sorting algorithms for large datasets.",
+      "category": "DSA",
+      "difficulty": "Medium",
+      "tags": ["sorting", "algorithms", "time-complexity"]
+    }
+  ]
+}

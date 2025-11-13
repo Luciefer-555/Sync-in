@@ -183,15 +183,6 @@ const Community = () => {
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-
   // Animation on scroll effect
   const postRefs = useRef<(HTMLDivElement | null)[]>([]);
 

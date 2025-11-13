@@ -14,6 +14,8 @@ import Resources from "@/components/pages/resources"
 import Community from "@/components/pages/community"
 import Profile from "@/components/pages/profile"
 import AboutSyncIn from "@/components/pages/about-syncin"
+import ChatInterface from "@/components/chat/ChatInterface"
+import Prep from "@/components/pages/prep"
 import { useState } from "react"
 
 export default function Page() {
@@ -41,6 +43,10 @@ export default function Page() {
         return <Resources />
       case "community":
         return <Community />
+      case "prep":
+        return <Prep />
+      case "assistant":
+        return <ChatInterface />
       case "profile":
         return <Profile />
       case "about":

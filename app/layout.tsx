@@ -1,7 +1,8 @@
-import type { Metadata } from "next"
-import { Inter, Roboto, Nunito_Sans } from "next/font/google"
+import type { Metadata, Viewport } from "next"
+import { Inter, Nunito_Sans } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { AuthProvider } from "./providers"
+import { PrepProgressProvider } from "@/components/providers/prep-progress-provider"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
 import "./globals.css"
@@ -30,10 +31,6 @@ export const metadata: Metadata = {
   keywords: ['student', 'education', 'learning', 'academics', 'progress tracking'],
   authors: [{ name: 'Your Name' }],
   creator: 'Your Name',
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: 'white' },
-    { media: '(prefers-color-scheme: dark)', color: 'black' },
-  ],
   openGraph: {
     type: 'website',
     locale: 'en_US',
@@ -48,6 +45,13 @@ export const metadata: Metadata = {
     description: 'Track your academic and technical growth with SyncIn',
     creator: '@yourhandle',
   },
+}
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: 'white' },
+    { media: '(prefers-color-scheme: dark)', color: 'black' },
+  ],
 }
 
 export default function RootLayout({
@@ -69,9 +73,10 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AuthProvider>
-            {children}
+            <PrepProgressProvider>{children}</PrepProgressProvider>
           </AuthProvider>
           <Analytics />
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

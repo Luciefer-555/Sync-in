@@ -3,7 +3,9 @@
 import { useEffect, useRef } from "react"
 
 import { gsap } from "gsap"
-import { LayoutDashboard, TrendingUp, FileText, Trophy, Users, BookOpen, MessageSquare, User, Info } from "lucide-react"
+import { LayoutDashboard, TrendingUp, FileText, Trophy, Users, BookOpen, MessageSquare, User, Info, Bot, Target } from "lucide-react"
+
+import { cn } from "@/lib/utils"
 
 interface SidebarProps {
   currentPage: string
@@ -15,9 +17,11 @@ const menuItems = [
   { id: "progress-tracker", label: "Progress Tracker", icon: TrendingUp },
   { id: "problem-statements", label: "Problem Statements", icon: FileText },
   { id: "hackathons", label: "Hackathons", icon: Trophy },
+  { id: "prep", label: "Prep", icon: Target },
   { id: "collaboration-hub", label: "Collaboration Hub", icon: Users },
   { id: "resources", label: "Resources", icon: BookOpen },
   { id: "community", label: "Community", icon: MessageSquare },
+  { id: "assistant", label: "SyncIn Assistant", icon: Bot },
   { id: "profile", label: "Profile", icon: User },
   { id: "about", label: "About SyncIn", icon: Info },
 ]
@@ -147,6 +151,32 @@ export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
         {menuItems.map((item, index) => {
           const Icon = item.icon
           const isActive = currentPage === item.id
+          const isAssistant = item.id === "assistant"
+
+          const buttonClassName = cn(
+            "group relative flex w-full items-center gap-3 overflow-hidden rounded-2xl px-4 py-3 text-left font-microsoft transition-transform duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40",
+            isAssistant
+              ? "bg-gradient-to-r from-[#111111] via-[#0d0d0d] to-[#050505] border border-white/5 text-white/80 shadow-[0_12px_30px_rgba(0,0,0,0.45)] hover:translate-x-1"
+              : "hover:translate-x-1",
+            isAssistant
+              ? isActive
+                ? "text-white"
+                : "text-white/80 hover:text-white"
+              : isActive
+                ? "text-black"
+                : "text-sidebar-foreground"
+          )
+
+          const iconClassName = cn(
+            "relative z-10 h-5 w-5 transition-colors duration-300",
+            isAssistant
+              ? isActive
+                ? "text-white"
+                : "text-white/80 group-hover:text-white"
+              : isActive
+                ? "text-black"
+                : "text-sidebar-foreground group-hover:text-black"
+          )
           return (
             <button
               key={item.id}
@@ -156,27 +186,26 @@ export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
               onClick={() => onNavigate(item.id)}
               onMouseEnter={() => handleEnter(index)}
               onMouseLeave={() => handleLeave(index)}
-              className={`group relative flex w-full items-center gap-3 overflow-hidden rounded-2xl px-4 py-3 text-left font-microsoft transition-transform duration-200 hover:translate-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 ${
-                isActive ? "text-black" : "text-sidebar-foreground"
-              }`}
+              className={buttonClassName}
             >
               <span
                 ref={(el) => {
                   circleRefs.current[index] = el
                 }}
-                className="pointer-events-none absolute left-1/2 bottom-0 block -z-10 rounded-full bg-white/90 shadow-[0_10px_30px_rgba(255,255,255,0.25)]"
+                className={cn(
+                  "pointer-events-none absolute left-1/2 bottom-0 block -z-10 rounded-full",
+                  isAssistant
+                    ? "bg-white/5 shadow-[0_10px_30px_rgba(0,0,0,0.45)]"
+                    : "bg-white/90 shadow-[0_10px_30px_rgba(255,255,255,0.25)]"
+                )}
               />
-              <Icon
-                className={`relative z-10 h-5 w-5 transition-colors duration-300 ${
-                  isActive ? "text-black" : "text-sidebar-foreground group-hover:text-black"
-                }`}
-              />
+              <Icon className={iconClassName} />
               <span className="relative z-10 inline-block leading-none">
                 <span
                   ref={(el) => {
                     labelRefs.current[index] = el
                   }}
-                  className="pill-label block text-base font-semibold tracking-tight"
+                  className="pill-label block text-[13px] font-medium tracking-tight"
                 >
                   {item.label}
                 </span>
@@ -184,7 +213,10 @@ export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
                   ref={(el) => {
                     hoverLabelRefs.current[index] = el
                   }}
-                  className="pill-label-hover absolute left-0 top-0 block text-base font-semibold tracking-tight text-black"
+                  className={cn(
+                    "pill-label-hover absolute left-0 top-0 block text-[13px] font-medium tracking-tight",
+                    isAssistant ? "text-white" : "text-black"
+                  )}
                   aria-hidden="true"
                 >
                   {item.label}

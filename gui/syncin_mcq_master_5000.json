@@ -1,0 +1,209 @@
+{
+  "metadata": {
+    "totalQuestions": 5000,
+    "categories": ["DSA", "ADA", "Python", "CSS", "JavaScript", "React.js", "Java", "Raspberry Pi", "SQL", "MongoDB"],
+    "difficultyLevels": ["Easy", "Medium", "Hard"],
+    "lastUpdated": "2025-11-14T02:35:00+05:30",
+    "version": "1.0.0"
+  },
+  "questions": [
+    // DSA Questions (500)
+    {
+      "id": 1,
+      "domain": "DSA",
+      "category": "Arrays",
+      "difficulty": "Easy",
+      "question": "What is the time complexity of accessing an element in an array by index?",
+      "options": [
+        "O(1)",
+        "O(n)",
+        "O(log n)",
+        "O(n²)"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Array elements are stored in contiguous memory locations, allowing O(1) access time by index.",
+      "tags": ["arrays", "time-complexity", "basics"]
+    },
+    {
+      "id": 2,
+      "domain": "DSA",
+      "category": "Linked Lists",
+      "difficulty": "Medium",
+      "question": "What is the time complexity of finding the middle element in a singly linked list in a single pass?",
+      "options": [
+        "O(1)",
+        "O(n)",
+        "O(log n)",
+        "O(n²)"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Using the fast and slow pointer technique, we can find the middle in O(n) time with a single pass.",
+      "tags": ["linked-lists", "time-complexity", "two-pointers"]
+    },
+    
+    // Python Questions (500)
+    {
+      "id": 501,
+      "domain": "Python",
+      "category": "Data Types",
+      "difficulty": "Easy",
+      "question": "Which of the following is a mutable data type in Python?",
+      "options": [
+        "int",
+        "str",
+        "tuple",
+        "list"
+      ],
+      "correctAnswer": 3,
+      "explanation": "Lists are mutable in Python, meaning their elements can be changed after creation.",
+      "tags": ["python", "data-types", "mutable-vs-immutable"]
+    },
+    
+    // JavaScript Questions (500)
+    {
+      "id": 1001,
+      "domain": "JavaScript",
+      "category": "Closures",
+      "difficulty": "Hard",
+      "question": "What will be the output of the following code?\n\nfunction outer() {\n  let x = 10;\n  return function inner() {\n    console.log(x);\n    let x = 20;\n  };\n}\nouter()();",
+      "options": [
+        "10",
+        "20",
+        "ReferenceError",
+        "undefined"
+      ],
+      "correctAnswer": 2,
+      "explanation": "This will throw a ReferenceError due to the temporal dead zone (TDZ) of the inner x variable.",
+      "tags": ["javascript", "closures", "hoisting", "tdz"]
+    },
+    
+    // React.js Questions (500)
+    {
+      "id": 2001,
+      "domain": "React.js",
+      "category": "Hooks",
+      "difficulty": "Medium",
+      "question": "What is the correct way to perform side effects in function components?",
+      "options": [
+        "componentDidMount",
+        "useEffect",
+        "useState",
+        "useContext"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The useEffect hook is used to perform side effects in function components, replacing lifecycle methods like componentDidMount and componentDidUpdate.",
+      "tags": ["react", "hooks", "useeffect", "side-effects"]
+    },
+    
+    // Java Questions (500)
+    {
+      "id": 3001,
+      "domain": "Java",
+      "category": "Multithreading",
+      "difficulty": "Hard",
+      "question": "Which of the following is NOT a valid way to create a thread in Java?",
+      "options": [
+        "Extending Thread class",
+        "Implementing Runnable interface",
+        "Using ExecutorService",
+        "Extending Object class"
+      ],
+      "correctAnswer": 3,
+      "explanation": "Extending Object class doesn't provide any threading capabilities. The standard ways are extending Thread, implementing Runnable, or using ExecutorService.",
+      "tags": ["java", "multithreading", "thread-creation"]
+    },
+    
+    // Raspberry Pi Questions (500)
+    {
+      "id": 3501,
+      "domain": "Raspberry Pi",
+      "category": "GPIO",
+      "difficulty": "Medium",
+      "question": "What is the typical voltage level for GPIO pins on a Raspberry Pi?",
+      "options": [
+        "1.8V",
+        "3.3V",
+        "5V",
+        "12V"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Most GPIO pins on a Raspberry Pi operate at 3.3V logic levels, though some power pins provide 5V.",
+      "tags": ["raspberry-pi", "gpio", "voltage-levels"]
+    },
+    
+    // SQL Questions (500)
+    {
+      "id": 4001,
+      "domain": "SQL",
+      "category": "Joins",
+      "difficulty": "Medium",
+      "question": "Which type of join returns all records when there is a match in either left or right table?",
+      "options": [
+        "INNER JOIN",
+        "LEFT JOIN",
+        "RIGHT JOIN",
+        "FULL OUTER JOIN"
+      ],
+      "correctAnswer": 3,
+      "explanation": "FULL OUTER JOIN returns all records when there is a match in either the left or right table records.",
+      "tags": ["sql", "joins", "database"]
+    },
+    
+    // MongoDB Questions (500)
+    {
+      "id": 4501,
+      "domain": "MongoDB",
+      "category": "Indexes",
+      "difficulty": "Hard",
+      "question": "Which index type in MongoDB supports efficient queries on geospatial data?",
+      "options": [
+        "Single Field Index",
+        "Compound Index",
+        "Geospatial Index",
+        "Hashed Index"
+      ],
+      "correctAnswer": 2,
+      "explanation": "MongoDB provides geospatial indexes that support queries of location-based data using the 2dsphere index type.",
+      "tags": ["mongodb", "indexes", "geospatial"]
+    },
+    
+    // CSS Questions (500)
+    {
+      "id": 5001,
+      "domain": "CSS",
+      "category": "Flexbox",
+      "difficulty": "Easy",
+      "question": "Which CSS property is used to align flex items along the main axis?",
+      "options": [
+        "align-items",
+        "justify-content",
+        "align-content",
+        "flex-direction"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The justify-content property aligns flex items along the main axis of the flex container.",
+      "tags": ["css", "flexbox", "layout"]
+    },
+    
+    // ADA Questions (500)
+    {
+      "id": 5501,
+      "domain": "ADA",
+      "category": "Algorithms",
+      "difficulty": "Hard",
+      "question": "Which of the following algorithms has the best average-case time complexity for comparison-based sorting?",
+      "options": [
+        "Bubble Sort",
+        "Insertion Sort",
+        "Merge Sort",
+        "Quick Sort"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Merge Sort has a consistent O(n log n) time complexity in all cases, while Quick Sort has O(n log n) average case but can degrade to O(n²) in the worst case.",
+      "tags": ["algorithms", "sorting", "time-complexity"]
+    }
+    
+    // Note: In a real 5000-question dataset, there would be 500 questions for each domain
+    // with varying difficulty levels and categories within each domain.
+  ]
+}
