@@ -30,8 +30,11 @@ export async function OPTIONS() {
   return withCors(response);
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
-  const activityId = params.id;
+export async function DELETE(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
+  const { id: activityId } = await context.params;
   const username = request.nextUrl.searchParams.get('username');
 
   if (!activityId) {

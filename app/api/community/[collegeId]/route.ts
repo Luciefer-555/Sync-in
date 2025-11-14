@@ -45,11 +45,15 @@ function sanitizeCommunityResponse(community: any) {
   };
 }
 
-export async function GET(_: Request, { params }: { params: { collegeId: string } }) {
+export async function GET(
+  _: Request,
+  context: { params: Promise<{ collegeId: string }> }
+) {
   try {
+    const { collegeId } = await context.params;
     await connectToDatabase();
 
-    const community = await CollegeCommunity.findOne({ collegeId: params.collegeId }).lean();
+    const community = await CollegeCommunity.findOne({ collegeId }).lean();
 
     return NextResponse.json({ success: true, data: sanitizeCommunityResponse(community) });
   } catch (error) {
@@ -58,7 +62,10 @@ export async function GET(_: Request, { params }: { params: { collegeId: string 
   }
 }
 
-export async function POST(request: Request, { params }: { params: { collegeId: string } }) {
+export async function POST(
+  request: Request,
+  context: { params: Promise<{ collegeId: string }> }
+) {
   try {
     const payload = await request.json();
     const parseResult = postSchema.safeParse(payload);
@@ -70,13 +77,14 @@ export async function POST(request: Request, { params }: { params: { collegeId: 
 
     const { authorProfileId, content } = parseResult.data;
 
+    const { collegeId } = await context.params;
     await connectToDatabase();
 
     const community = await CollegeCommunity.findOneAndUpdate(
-      { collegeId: params.collegeId },
+      { collegeId },
       {
         $setOnInsert: {
-          collegeId: params.collegeId,
+          collegeId,
           collegeName: payload.collegeName ?? 'Unknown College',
           members: [],
           posts: [],
