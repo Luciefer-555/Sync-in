@@ -191,13 +191,6 @@ export default function SIHProblems() {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
-                placeholder="Search problem statements..."
-                className="pl-10"
-                value={searchTerm}
-                <input
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
 
               </div>
               <Button type="submit" className="w-full md:w-auto">
