@@ -46,7 +46,7 @@ export default function SIHProblems() {
     if (category) query.category = category;
     if (theme) query.theme = theme;
     if (page > 1) query.page = page;
-    
+
     router.push({
       pathname: '/sih-problems',
       query,
@@ -151,9 +151,9 @@ export default function SIHProblems() {
           Last Date: {problem.lastDate}
         </span>
         <Button variant="outline" size="sm" asChild>
-          <a 
-            href={problem.url} 
-            target="_blank" 
+          <a
+            href={problem.url}
+            target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1"
           >
@@ -170,7 +170,7 @@ export default function SIHProblems() {
         <title>SIH Problem Statements | SyncIn</title>
         <meta name="description" content="Browse and search through Smart India Hackathon problem statements" />
       </Head>
-      
+
       <div className="mb-8 text-center">
         <h1 className="text-3xl font-bold mb-2">Smart India Hackathon Problem Statements</h1>
         <p className="text-muted-foreground">
@@ -194,143 +194,146 @@ export default function SIHProblems() {
                 placeholder="Search problem statements..."
                 className="pl-10"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            <Button type="submit" className="w-full md:w-auto">
-              <Search className="mr-2 h-4 w-4" /> Search
-            </Button>
-          </div>
+                <input
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
 
-          <div className="flex flex-wrap gap-3 items-center">
-            <div className="flex items-center gap-2">
-              <Filter className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm font-medium">Filters:</span>
-            </div>
-            
-            <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="All Categories" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="">All Categories</SelectItem>
-                {categories.map((cat) => (
-                  <SelectItem key={cat} value={cat}>
-                    {cat}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select value={theme} onValueChange={setTheme}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="All Themes" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="">All Themes</SelectItem>
-                {themes.map((t) => (
-                  <SelectItem key={t} value={t}>
-                    {t}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            {(searchTerm || category || theme) && (
-              <Button
-                variant="ghost"
-                onClick={clearFilters}
-                className="ml-auto text-sm text-muted-foreground"
-                size="sm"
-              >
-                Clear filters
-              </Button>
-            )}
-          </div>
-        </form>
-      </CardContent>
-    </Card>
-
-    {/* Tabs */}
-    <Tabs defaultValue="all" onValueChange={setActiveTab} className="mb-6">
-      <TabsList>
-        <TabsTrigger value="all">All Problems</TabsTrigger>
-        <TabsTrigger value="open">Open</TabsTrigger>
-        <TabsTrigger value="recent">Recently Added</TabsTrigger>
-        <TabsTrigger value="popular">Most Viewed</TabsTrigger>
-      </TabsList>
-    </Tabs>
-
-    {/* Problem Statements Grid */}
-    {loading ? (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <Card key={i}>
-            <CardHeader>
-              <Skeleton className="h-6 w-3/4 mb-2" />
-              <Skeleton className="h-4 w-1/2" />
-            </CardHeader>
-            <CardContent>
-              <Skeleton className="h-4 w-full mb-2" />
-              <Skeleton className="h-4 w-5/6 mb-2" />
-              <Skeleton className="h-4 w-4/6" />
-              <div className="flex gap-2 mt-4">
-                <Skeleton className="h-6 w-16" />
-                <Skeleton className="h-6 w-16" />
               </div>
-            </CardContent>
-            <CardFooter className="flex justify-between">
-              <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-9 w-24" />
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
-    ) : problemStatements.length > 0 ? (
-      <>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {problemStatements.map(renderProblemCard)}
-        </div>
-
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="flex justify-center mt-8 gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              disabled={page === 1}
-            >
-              Previous
-            </Button>
-            <div className="flex items-center px-4">
-              <span className="text-sm text-muted-foreground">
-                Page {page} of {totalPages}
-              </span>
+              <Button type="submit" className="w-full md:w-auto">
+                <Search className="mr-2 h-4 w-4" /> Search
+              </Button>
             </div>
-            <Button
-              variant="outline"
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              disabled={page >= totalPages}
-            >
-              Next
-            </Button>
-          </div>
-        )}
-      </>
-    ) : (
-      <div className="text-center py-12">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-muted">
-          <Search className="h-6 w-6 text-muted-foreground" />
+
+            <div className="flex flex-wrap gap-3 items-center">
+              <div className="flex items-center gap-2">
+                <Filter className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm font-medium">Filters:</span>
+              </div>
+
+              <Select value={category} onValueChange={setCategory}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="All Categories" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">All Categories</SelectItem>
+                  {categories.map((cat) => (
+                    <SelectItem key={cat} value={cat}>
+                      {cat}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Select value={theme} onValueChange={setTheme}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="All Themes" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">All Themes</SelectItem>
+                  {themes.map((t) => (
+                    <SelectItem key={t} value={t}>
+                      {t}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              {(searchTerm || category || theme) && (
+                <Button
+                  variant="ghost"
+                  onClick={clearFilters}
+                  className="ml-auto text-sm text-muted-foreground"
+                  size="sm"
+                >
+                  Clear filters
+                </Button>
+              )}
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+
+      {/* Tabs */}
+      <Tabs defaultValue="all" onValueChange={setActiveTab} className="mb-6">
+        <TabsList>
+          <TabsTrigger value="all">All Problems</TabsTrigger>
+          <TabsTrigger value="open">Open</TabsTrigger>
+          <TabsTrigger value="recent">Recently Added</TabsTrigger>
+          <TabsTrigger value="popular">Most Viewed</TabsTrigger>
+        </TabsList>
+      </Tabs>
+
+      {/* Problem Statements Grid */}
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Card key={i}>
+              <CardHeader>
+                <Skeleton className="h-6 w-3/4 mb-2" />
+                <Skeleton className="h-4 w-1/2" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-4 w-full mb-2" />
+                <Skeleton className="h-4 w-5/6 mb-2" />
+                <Skeleton className="h-4 w-4/6" />
+                <div className="flex gap-2 mt-4">
+                  <Skeleton className="h-6 w-16" />
+                  <Skeleton className="h-6 w-16" />
+                </div>
+              </CardContent>
+              <CardFooter className="flex justify-between">
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-9 w-24" />
+              </CardFooter>
+            </Card>
+          ))}
         </div>
-        <h3 className="mt-4 text-lg font-medium">No problem statements found</h3>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Try adjusting your search or filter criteria
-        </p>
-        <Button variant="outline" className="mt-4" onClick={clearFilters}>
-          Clear all filters
-        </Button>
-      </div>
-    )}
-  </div>
-);
+      ) : problemStatements.length > 0 ? (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {problemStatements.map(renderProblemCard)}
+          </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex justify-center mt-8 gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page === 1}
+              >
+                Previous
+              </Button>
+              <div className="flex items-center px-4">
+                <span className="text-sm text-muted-foreground">
+                  Page {page} of {totalPages}
+                </span>
+              </div>
+              <Button
+                variant="outline"
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={page >= totalPages}
+              >
+                Next
+              </Button>
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="text-center py-12">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+            <Search className="h-6 w-6 text-muted-foreground" />
+          </div>
+          <h3 className="mt-4 text-lg font-medium">No problem statements found</h3>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Try adjusting your search or filter criteria
+          </p>
+          <Button variant="outline" className="mt-4" onClick={clearFilters}>
+            Clear all filters
+          </Button>
+        </div>
+      )}
+    </div>
+  );
 }
