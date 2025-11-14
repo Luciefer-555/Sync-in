@@ -40,7 +40,10 @@ function sanitizeCommunityResponse(community: any) {
   };
 }
 
-export async function POST(request: Request, { params }: { params: { collegeId: string } }) {
+export async function POST(
+  request: Request,
+  context: { params: Promise<{ collegeId: string }> }
+) {
   try {
     const payload = await request.json();
     const parseResult = commentSchema.safeParse(payload);
@@ -52,9 +55,10 @@ export async function POST(request: Request, { params }: { params: { collegeId: 
 
     const { postId, authorProfileId, text } = parseResult.data;
 
+    const { collegeId } = await context.params;
     await connectToDatabase();
 
-    const community = await CollegeCommunity.findOne({ collegeId: params.collegeId });
+    const community = await CollegeCommunity.findOne({ collegeId });
     if (!community) {
       return NextResponse.json({ success: false, error: 'Community not found' }, { status: 404 });
     }
