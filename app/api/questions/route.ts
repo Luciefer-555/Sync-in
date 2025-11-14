@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import dbConnect from "../../../lib/mongodb"
+import { connectToDatabase } from "../../../lib/mongodb"
 import mongoose from "mongoose"
 
 const QuestionSchema = new mongoose.Schema({}, { strict: false })
@@ -7,7 +7,7 @@ const Question = mongoose.models.Question || mongoose.model("Question", Question
 
 export async function GET(req: Request) {
   try {
-    await dbConnect()
+    await connectToDatabase()
 
     const { searchParams } = new URL(req.url)
 
